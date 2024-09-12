@@ -36,14 +36,23 @@
       <div class="title-content-space"></div>
       <div class="content">
         <img width="256px" height="256px" id="sbti"
-          src="https://sustainabletravel.org/wp-content/uploads/Carbon-Footprint-Tourism-Chart-STI-Web-2.png" alt="" />
+          src="https://github.com/Om-dharra/CarbonLens/blob/main/Screenshot%202024-01-10%20202630.png?raw=true" alt="" />
         <div style="width: 124px"></div>
         <span> <%= overview %>.<br> Your result: <%=result/1000%> tonnes. </span>
       </div>
     </div>
     <div class="box box-blue">
       <div class="title">Recommendations</div>
-      <%= recommendations %>
+      <% recommendations.forEach((r, i)=> {%>
+        <div class="list-item">
+          <div class="sno">
+            <%=i+1%>
+          </div>
+          <div class="content">
+            <%=r%>
+          </div>
+        </div>
+        <%})%>
     </div>
 
 </section>

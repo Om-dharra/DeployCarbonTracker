@@ -6,8 +6,8 @@ const {isLoggedIn}=require("../middleware");
 
 const FootPrintDb=require("../models/FootprintDb");
 const VehicleDb=require("../models/VehicleDb");
-
-// const OpenAI = require("openai");
+const API_KEY= process.env.API_KEY;
+const OpenAI = require("openai");
 
 let domain_of_company;
 let electricity;
@@ -18,34 +18,22 @@ let standard;
 let response;
 let result;
 let input2;
-const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-// Access your API key as an environment variable (see "Set up your API key" above)
-const genAI = new GoogleGenerativeAI(process.env.API_KEY);
+const openai = new OpenAI({
+  apiKey: API_KEY,
+});
+async function main(input) {
 
-async function run(prompt) {
-  // For text-only input, use the gemini-pro model
-  const model = genAI.getGenerativeModel({ model: "gemini-pro"});
-
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
-  const text = response.text();
-  return text;
-}
-
-
-// async function main(input) {
-
-//     const completion = await openai.chat.completions.create({
-//       messages: [{"role": "system", "content": "You are a helpful assistant."},
-//           {"role": "user", "content": input},
-//           {"role" : "assistant", "content": "give me result in json format"}
-//       ],
-//       model: "gpt-3.5-turbo",
-//     });
-//     let content = completion.choices[0].message.content;
-//     return content;
-//  }
+    const completion = await openai.chat.completions.create({
+      messages: [{"role": "system", "content": "You are a helpful assistant."},
+          {"role": "user", "content": input},
+          {"role" : "assistant", "content": "give me result in json format"}
+      ],
+      model: "gpt-3.5-turbo",
+    });
+    let content = completion.choices[0].message.content;
+    return content;
+ }
 
 router.post('/answer/:businessid', isLoggedIn, async function (req, res) {
   const { businessid } = req.params;
@@ -109,14 +97,10 @@ router.get("/newPage/:businessid",isLoggedIn,async(req, res)=>{
   })
   console.log(Arr);
   const len=Arr.length;
-  const recommendations=await run(`how to reduce carbon footprint of my company?Provide space separated list of recommendations.on basis of my carbon emission of ${result} tonnes`);
-  // response = JSON.parse(await main(input2));
-  console.log(response);
-  const analysis=await run(`"Based on "electricity_kwh": ${electricity},  "petrol_litre": ${petrol},  "diesel_litre": ${diesel},  "carbon_emission_per_product": ${carbonEmission},  "global_average_per_product": ${standard},  "domain_of_company": "${domain_of_company}", your current carbon footprint is assessed, and areas for improvement are identified."`);
-  const performance=await run(`The company's current environmental performance is evaluated, considering "electricity_kwh": ${electricity},  "petrol_litre": ${petrol},  "diesel_litre": ${diesel},  "carbon_emission_per_product": ${carbonEmission},  "global_average_per_product": ${standard},  "domain_of_company": ${domain_of_company}`);
-  const overview=await run(`As an environmental specialist analyzing the carbon footprint of your ${domain_of_company} company, here is a comprehensive report and actionable recommendations.`);
-  res.render('AiChatbot/recommendations', { recommendations , analysis, performance, result, overview,Arr,len,average});
-
+  response = JSON.parse(await main(input2));
+  console.log(response)
+  
+  res.render('AiChatbot/recommendations', { recommendations: response.recommendations, analysis: response.analysis, performance: response.performance, result, overview:response.overview,Arr,len,average});
 })
 
 
