@@ -1,0 +1,62 @@
+<% layout('layout/boilerplate') -%>
+<link rel="stylesheet" href="../styles/form.css">
+<section>
+    <div class="border p-3 mx-auto w-50 mt-5">
+        <div class="buttons-container">
+          <a href="/BuildingDb/<%= businessid %>" class="button" id="notactive"
+            >Building</a
+          >
+          <a id="active">Vehicles</a>
+          <a href="/SupplyDb/<%= businessid %>" class="button" id="notactive">Supply Chain</a>
+          <a href="/Result/<%= businessid %>" class="button" id="notactive"
+            >Results</a
+          >
+        </div>
+        <div class="container">
+          <h2>Enter Your Consumption Data</h2>
+          <form id="carbon-form" method="post" action="/CalculateFinal/<%= businessid %>">
+            <div class="aks-input-row">
+                <label class="aks-input-label" for="petrol">Petrol (litres) :</label>
+                <input
+                  class="aks-input"
+                  type="number"
+                  id="petrol"
+                  name="petrol"
+                  placeholder="Scope 1"
+                  required
+                />
+              </div>
+      
+              <div class="aks-input-row">
+                <label class="aks-input-label" for="diesel">Diesel (litres) :</label>
+                <input
+                  class="aks-input"
+                  type="number"
+                  id="diesel"
+                  name="diesel"
+                  placeholder="Scope 1"
+                  required
+                />
+              </div>
+      
+              <div class="aks-input-row">
+                <label class="aks-input-label" for="cng">CNG (kg) :</label>
+                <input class="aks-input" type="number" id="cng" name="cng" placeholder="Scope 1" />
+              </div>
+      
+              <div class="aks-input-row">
+                <label class="aks-input-label" for="lpg">LPG (kg):</label>
+                <input class="aks-input" type="number" id="lpg" name="lpg" placeholder="Scope 1" />
+              </div>
+      
+              <div class="aks-input-row">
+                <button class="aks-input" class="button-container" type="submit">
+                  Calculate
+                </button>
+              </div>
+          </form>
+        </div>
+      </div>
+      
+  
+</section>

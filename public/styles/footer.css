@@ -1,0 +1,133 @@
+* {
+    box-sizing: border-box;
+}
+
+.inner {
+    position: absolute;
+}
+
+#footer {
+    display: flex;
+    flex-direction: row;
+}
+
+#footer h3 {
+    position: relative;
+    top: 0.3rem;
+    left: 0.2rem;
+}
+
+.footercard {
+    width: 25%;
+    height: 250px;
+    padding: 25px;
+    z-index: 2;
+}
+
+body {
+    /* min-height: 90vh */
+    /* display: flex; */
+    /* flex-direction: column; */
+}
+
+footer {
+    /* border-top: 20px solid #f6f5f7; */
+    width: 100%;
+    padding-top: 20px;
+    color: white !important;
+    /* bottom: 0; */
+    left: 0;
+    position: absolute;
+    /* Change this line */
+}
+
+.background {
+    background-image: url('/images/forest.jpg');
+    opacity: 0.15;
+    /* Placeholder image URL */
+    background-repeat: no-repeat;
+    position: absolute;
+    background-position: center;
+    /* or center top */
+    background-size: cover;
+    /* position: relative; */
+    width: 100%;
+    /* filter: blur(5px); */
+    overflow: hidden;
+    /* z-index: -1; */
+    height: 20rem;
+}
+
+.footer-img {
+    border-radius: 50%;
+}
+
+#footer {
+    width: 100%;
+    /* position: relative; */
+}
+
+#footer::before {
+    content: "";
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(97, 198, 122, 0.5);
+    z-index: 0;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.column h2 {
+    color: white;
+}
+
+.linkedin {
+    filter: invert(1);
+    width: 18px;
+}
+
+.footercard h3 {
+    display: inline;
+}
+
+.column ul li a {
+    text-decoration: none;
+    color: white;
+    height: 2rem;
+
+}
+
+footer {
+    margin: auto;
+    display: block;
+}
+
+.linkedin {
+    height: 1rem;
+    padding-bottom: 0.1rem;
+    margin-right: 0.2rem;
+}
+
+footer ul {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: auto;
+    /* margin-top: 0.3rem; */
+}
+
+footer h2 {
+    text-align: left;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.footer-img {
+    display: inline;
+    height: 45px;
+}

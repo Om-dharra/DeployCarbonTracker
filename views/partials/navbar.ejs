@@ -1,0 +1,249 @@
+<style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+    }
+  
+    .Navbar {
+      display: flex;
+      justify-content: space-between;
+      background: linear-gradient(45deg, #54bb90, #408551);
+      margin: 0;
+      align-items: center;
+      padding: 0;
+    }
+  
+    .Navbar img {
+      height: 3.5rem;
+      margin: auto;
+      border-radius: 50%;
+      object-fit: fill;
+      margin-top: 3px;
+    }
+  
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      height: 4rem;
+    }
+  
+    .Navbar li {
+      margin: auto;
+    }
+  
+    .Navbar a {
+      text-decoration: none;
+      font-size: 1.5rem;
+      margin: 0 10px;
+      color: rgb(234, 241, 241);
+    }
+  
+    .hamburg {
+      width: 4.5rem;
+      height: 4rem;
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      margin-right: 0.5rem;
+      display: none;
+      /* background: inherit; */
+    }
+  
+    .hamburg div {
+      height: 5px;
+      width: 100%;
+      background-color: aliceblue;
+    }
+  
+    #side-drawer {
+      display: none;
+      width: 100%;
+      height: 34%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: linear-gradient(45deg, rgb(235, 192, 255), rgb(132, 219, 184));
+    }
+  
+    #side-drawer ul {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      height: 100%;
+      width: 100%;
+    }
+  
+    #side-drawer img {
+      height: 3.5rem;
+      margin: 1rem;
+      /* margin-top: 3rem; */
+      border-radius: 50%;
+      object-fit: fill;
+    }
+  
+    #side-drawer li {
+      display: block;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+  
+    #side-drawer a {
+      text-decoration: none;
+      font-size: 1.5rem;
+      margin: 0;
+      color: rgb(234, 241, 241);
+    }
+  
+    aside nav {
+      height: 100%;
+      width: 100%;
+    }
+  
+    #side-drawer ul > a {
+      margin: 0;
+    }
+  
+    #burg {
+      display: inline;
+    }
+  
+    #nav {
+      display: flex;
+      justify-content: space-between;
+    }
+    button {
+      border: 2px solid black;
+    }
+  
+    @media (max-width: 780px) {
+      .Navbar li {
+        display: none;
+      }
+  
+      .hamburg {
+        display: inline-flex;
+      }
+    }
+      /* }my edits  */
+  
+      .Navbar .left ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+  
+      .Navbar .left ul li {
+        display: inline;
+        margin-right: 20px;
+      }
+  
+      .Navbar .right ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+  
+      .Navbar .right ul li {
+        display: inline;
+      }
+  
+      .Navbar .right ul li a {
+        margin:0 20px;
+        text-decoration: none;
+        color: #dbffd8;
+      }
+  
+      .Navbar .right ul li span {
+        margin-right: 10px;
+      }
+      
+      .Navbar .right ul li a.loginbutton {
+          padding: 10px 20px;
+          background: white;
+          border-radius: 50px;
+          font-size: 1.3rem;
+          color:#428a57;
+          text-decoration: none; /* Ensure no underline for the button */
+      }
+      .left ul li a{
+        padding: 10px;
+      }
+      .left ul li a:hover{
+        background-color: rgb(255, 255, 255,0.3);
+        padding: 10px;
+        border-radius: 50px;
+      }
+  </style>
+  <script>
+    let button = document.querySelectorAll(".hamburg");
+    let side = document.getElementById("side-drawer");
+    function open(event) {
+      side.style.display = "flex";
+    }
+    function close() {
+      side.style.display = "none";
+    }
+    button[0].addEventListener("click", open);
+    button[1].addEventListener("click", close);
+  </script>
+  
+  <nav class="Navbar">
+    <ul>
+      <div class="left">
+        <ul>
+          <a href="#"
+            ><img
+              src="https://github.com/Om-dharra/coffee_site.github.io/blob/main/WhatsApp%20Image%202023-12-25%20at%2016.44.47_67604895.jpg?raw=true"
+              alt=""
+          /></a>
+          <li><a href="/home">Home</a></li>
+          <li><a href="/FillForm">Calculate your Carbon emission</a></li>
+          <li><a href="/Contact">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="right">
+        <ul>
+          <% if(currentUser){ %>
+              <li>
+                <a class="loginbutton" href="/dashboard"><%= currentUser.username %></a>
+              </li> 
+              <li>
+                <a class="logout" href="/logout">LogOut</a>
+              </li> 
+              
+            <% }else{ %>
+            
+              <li >
+                <a class="loginbutton" href="/login">Login/Signup</a>
+              </li>  
+            <% } %>
+      </ul>
+      
+      <a href="#">
+          <div id="hamburg">
+              <div></div>
+              <div></div>
+              <div></div>
+          </div>
+      </a>
+  </nav>
+  <aside id="side-drawer">
+    <nav>
+      <ul>
+        <a href="/home"
+          ><img
+            src="https://github.com/Om-dharra/coffee_site.github.io/blob/main/WhatsApp%20Image%202023-12-25%20at%2016.44.47_67604895.jpg?raw=true"
+            alt=""
+        /></a>
+        <li><a href="/FillForm">Calculate your Carbon emission</a></li>
+  
+        <li><a href="/Contact">Contact Us</a></li>
+      </ul>
+    </nav>
+  </aside>
+  

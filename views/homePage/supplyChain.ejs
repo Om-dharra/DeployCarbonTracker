@@ -1,0 +1,117 @@
+<% layout('./layout/boilerplate') %>
+<link rel="stylesheet" href="../styles/supply.css"/>
+
+
+<script>
+  function showInputFields() {
+    const selectedOption = document.getElementById("options").value;
+    const inputContainer = document.getElementById("inputContainer");
+    inputContainer.innerHTML = ""; // Clear previous inputs
+
+    if (
+      selectedOption === "Steel (BF-BOF)" ||
+      selectedOption === "Steel (EAF)"
+    ) {
+      const coalInputLabel = document.createElement("label");
+      coalInputLabel.textContent = "Steel produced in tonnes: ";
+      const coalInput = document.createElement("input");
+      coalInput.type = "number";
+      coalInput.name = "coalProduced";
+      inputContainer.appendChild(document.createElement("br"));
+      inputContainer.appendChild(coalInputLabel);
+      inputContainer.appendChild(coalInput);
+    } else if (selectedOption === "Cars") {
+      const smallCarsInputLabel = document.createElement("label");
+      smallCarsInputLabel.textContent = "Number of small cars: ";
+      const smallCarsInput = document.createElement("input");
+      smallCarsInput.type = "number";
+      smallCarsInput.name = "smallCars";
+      inputContainer.appendChild(document.createElement("br"));
+      inputContainer.appendChild(smallCarsInputLabel);
+      inputContainer.appendChild(smallCarsInput);
+      inputContainer.appendChild(document.createElement("br"));
+      inputContainer.appendChild(document.createElement("br"));
+
+      const midSizeCarsInputLabel = document.createElement("label");
+      midSizeCarsInputLabel.textContent = "Number of mid-size cars: ";
+      const midSizeCarsInput = document.createElement("input");
+      midSizeCarsInput.type = "number";
+      midSizeCarsInput.name = "midSizeCars";
+      inputContainer.appendChild(midSizeCarsInputLabel);
+      inputContainer.appendChild(midSizeCarsInput);
+      inputContainer.appendChild(document.createElement("br"));
+      inputContainer.appendChild(document.createElement("br"));
+
+      const largeSUVsInputLabel = document.createElement("label");
+      largeSUVsInputLabel.textContent = "Number of large SUVs: ";
+      const largeSUVsInput = document.createElement("input");
+      largeSUVsInput.type = "number";
+      largeSUVsInput.name = "largeSUVs";
+      inputContainer.appendChild(largeSUVsInputLabel);
+      inputContainer.appendChild(largeSUVsInput);
+      inputContainer.appendChild(document.createElement("br"));
+      inputContainer.appendChild(document.createElement("br"));
+
+      const electricVehiclesInputLabel = document.createElement("label");
+      electricVehiclesInputLabel.textContent =
+        "Number of electric vehicles: ";
+      const electricVehiclesInput = document.createElement("input");
+      electricVehiclesInput.type = "number";
+      electricVehiclesInput.name = "electricVehicles";
+      inputContainer.appendChild(electricVehiclesInputLabel);
+      inputContainer.appendChild(electricVehiclesInput);
+      inputContainer.appendChild(document.createElement("br"));
+      inputContainer.appendChild(document.createElement("br"));
+    }
+  }
+</script>
+<section>
+  <div class="border p-3 mx-auto w-50 mt-5">
+    <div class="outside">
+      <div class="buttons-container">
+        <a href="/BuildingDb/<%= businessid %>" class="button" id="notactive"
+        >Building</a
+        >
+        <a href="/VehicleDb/<%= businessid %>" class="button" id="notactive"
+          >Vehicles</a
+          >
+        <a id="active">Supply Chain</a>
+        <a href="/Result/<%= businessid %>" class="button" id="notactive"
+          >Results</a
+        >
+      </div>
+      <div class="container">
+        <form method="post" action="/ProductCF/<%= businessid %>" onsubmit="validateSelection()">
+          <label for="options">Select an option:</label>
+          <select id="options" required onchange="showInputFields();">
+            <option value="" disabled selected>Select the product type</option>
+            <option value="Steel (BF-BOF)">Steel (BF-BOF)</option>
+            <option value="Steel (EAF)">Steel (EAF)</option>
+            <option value="Cars">Cars</option>
+          </select>
+    
+          <div id="inputContainer">
+            <!-- Input fields will be generated here -->
+          </div>
+          <br />
+    
+          <button class="button-container" type="submit">Next</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function validateSelection() {
+    const selectedOption = document.getElementById("options").value;
+    if (selectedOption === "") {
+      alert("Please select a product type");
+      return false;
+    }
+    // Here, you can handle form submission or data processing
+    // For example: document.getElementById("myForm").submit();
+  }
+</script>
+
+

@@ -1,0 +1,82 @@
+.outside {
+    display: block;
+    margin: auto;
+    width: 1000px;
+}
+
+.container {
+    border: 1px solid white;
+    box-shadow: 0 0 14px rgba(255, 255, 255, 0.7);
+    border-radius: 20px;
+    display: block;
+    /* width: 40%; */
+    padding: 18px 21px;
+    background: linear-gradient(135deg, rgb(222, 222, 242), rgb(227, 241, 238));
+    overflow: hidden;
+    box-shadow: 2px 2px 4px rgb(128, 128, 128);
+}
+
+.container label {
+    font-size: 0.9rem;
+}
+
+.container h2 {
+    text-align: center;
+    padding: 0px 0px;
+    margin-top: 5px;
+}
+
+.container form {
+    padding-left: 1.5rem;
+}
+
+.container input {
+    padding: 0px 0rem 0 0.5rem;
+    margin: 0 21px;
+    border-radius: 3px;
+    margin: 4px 21px;
+    border-radius: 5px;
+    border: 1px solid grey;
+}
+
+.container button {
+    padding: 7px 95px;
+    background: linear-gradient(45deg, rgb(13, 14, 50), rgb(51, 120, 91));
+    border-radius: 3px;
+    border: none;
+    color: white;
+}
+
+.container button:hover {
+    color: aquamarine;
+}
+
+.container input:active {
+    transform: scale(0.95);
+}
+
+.buttons-container {
+    margin-left: 20px;
+    margin-bottom: 7px;
+}
+
+.buttons-container a {
+    text-decoration: none;
+    border: 1px solid white;
+    padding: 4px 15px;
+    color: black;
+    border-radius: 4px;
+}
+
+#active {
+    background: linear-gradient(135deg, rgb(222, 222, 242), rgb(227, 241, 238));
+    /* border: 2px solid rgb(163, 201, 163); */
+    /* padding: 2px 12px; */
+    cursor: default;
+}
+
+.button:hover {
+    background-color: rgb(235, 179, 179);
+    padding: 8px 20px;
+    border-radius: 6px;
+}

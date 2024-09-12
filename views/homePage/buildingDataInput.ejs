@@ -1,0 +1,139 @@
+<% layout('layout/boilerplate') -%>
+<link rel="stylesheet" href="../styles/form.css">
+
+<section>
+  <div class="border p-3 mx-auto w-50 mt-5">
+    <div class="buttons-container">
+      <a id="active">Building</a>
+      <a href="/VehicleDb/<%= businessid %>" class="button" id="notactive">Vehicles</a>
+      <a href="/SupplyDb/<%= businessid %>" class="button" id="notactive">Supply Chain</a>
+      <a href="/Result/<%= businessid %>" class="button" id="notactive">Results</a>
+    </div>
+    <div class="container">
+      <h2>Enter Your Consumption Data</h2>
+      <form id="carbon-form" method="post" action="/calulateCF/<%= businessid %>">
+        <div class="aks-input-row">
+          <label class="aks-input-label" for="electricity"
+            >Electricity (kWh):</label
+          >
+          <input
+            class="aks-input"
+            type="number"
+            id="electricity"
+            name="electricity"
+            placeholder="Scope 2"
+            required
+          />
+        </div>
+
+        <div class="aks-input-row">
+          <label class="aks-input-label" for="naturalGas"
+            >Natural Gas (kg):</label
+          >
+          <input
+            class="aks-input"
+            type="number"
+            id="naturalGas"
+            name="naturalGas"
+            placeholder="Scope 1"
+            required
+          />
+        </div>
+
+        <div class="aks-input-row">
+          <label class="aks-input-label" for="heatingOil"
+            >Heating Oil (kg):</label
+          >
+          <input
+            class="aks-input"
+            type="number"
+            id="heatingOil"
+            name="heatingOil"
+            placeholder="Scope 1"
+            required
+          />
+        </div>
+
+        <div class="aks-input-row">
+          <label class="aks-input-label" for="coal"
+            >Coal (metric tonnes):</label
+          >
+          <input
+            class="aks-input"
+            type="number"
+            id="coal"
+            name="coal"
+            placeholder="Scope 2"
+            required
+          />
+        </div>
+
+        <div class="aks-input-row">
+          <label class="aks-input-label" for="lpg">LPG (kg):</label>
+          <input
+            class="aks-input"
+            type="number"
+            id="lpg"
+            name="lpg"
+            placeholder="Scope 1"
+            required
+          /><br /><br />
+        </div>
+
+        <div class="aks-input-row">
+          <label class="aks-input-label" for="propane">Propane (kg):</label>
+          <input
+            class="aks-input"
+            type="number"
+            id="propane"
+            name="propane"
+            placeholder="Scope 3"
+            required
+          /><br /><br />
+        </div>
+
+        <div class="aks-input-row">
+          <label class="aks-input-label" for="diesel">Diesel (litres):</label>
+          <input
+            class="aks-input"
+            type="number"
+            id="diesel"
+            name="diesel"
+            placeholder="Scope 1"
+            required
+          /><br /><br />
+        </div>
+        <div class="aks-input-row">
+          <label class="aks-input-label" for="refrigerant">Refrigerant:</label>
+          <select class="aks-input" id="refrigerant" name="refrigerant">
+            <option value="CFC">Chlorofluorocarbon</option>
+            <option value="HFC">Hydroflourocarbons</option>
+            <option value="DFM">Difluoromethane</option>
+            <option value="HFCB">HFC Blend</option>
+            <option value="IB">Isobutane</option>
+            <option value="Pro">Propane</option>
+          </select>
+        </div>
+
+        <div class="aks-input-row">
+          <label class="aks-input-label" for="refrigerantAmount"
+            >Refrigerant Amount (kg):</label
+          >
+          <input
+            class="aks-input"
+            type="number"
+            id="refrigerantAmount"
+            placeholder="Scope 1"
+            name="refrigerantAmount"
+            required
+          />
+        </div>
+
+        <div class="aks-input-row">
+          <button class="aks-input" class="button-container" type="submit">
+            Next
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>

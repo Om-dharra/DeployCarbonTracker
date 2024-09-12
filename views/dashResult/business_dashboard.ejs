@@ -1,0 +1,164 @@
+<% layout('./layout/boilerplate') %>
+
+<style>
+  table {
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 8px;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  th {
+    background-color: #61c67a;
+    color: white;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: start;
+    margin: 25px;
+  }
+
+  .monthlyChart {
+    width: 50%;
+    height: 75%;
+  }
+
+  .read {
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 0.5rem;
+    width: 100%;
+    padding: 0.75rem 1.25rem;
+    text-align: center;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+  }
+
+  .read {
+    background-color: #61c67a;
+    color: rgba(255, 255, 255, 1);
+  }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<section>
+  <div class="row">
+    <h2><%=business.Bname%></h2>
+    <h3>Monthly report</h3>
+  </div>
+  <div class="row">
+    <table style="width: 40%">
+      <tr>
+        <th>Month</th>
+        <th>Carbon Emission (in KG)</th>
+        <th></th>
+      </tr>
+      <% Object.keys(monthlyResults).forEach((year, i)=> {%> <%
+      Object.keys(monthlyResults[year]).forEach((month, i)=> {%> <%let result =
+      monthlyResults[year][month]%>
+      <tr>
+        <td><%=monthNames[month]%>, <%=year%></td>
+        <td><%=result.toFixed(2)%></td>
+        <td>
+          <a class="read" href="/Result/<%=businessid%>"> Details </a>
+        </td>
+      </tr>
+      <%})%> <%})%>
+      <tr>
+        <th>Total</th>
+        <th><%= business.Result%></th>
+        <th>
+          <!-- <a class="read" href="#"> Details </a> -->
+        </th>
+      </tr>
+    </table>
+
+    <div style="width: 20px"></div>
+
+    <div class="monthlyChart">
+      <canvas id="monthlyChart"></canvas>
+    </div>
+  </div>
+</section>
+
+<script>
+  const monthlyResults = <%- JSON.stringify(monthlyResults) %>;
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "Octomber",
+    "November",
+    "December",
+  ];
+  const allLabels = [];
+  const inputData = [];
+  const labelofLegend = "Carbon Emission (in KG)";
+  Object.keys(monthlyResults).forEach((year, _) => Object.keys(monthlyResults[year]).forEach((month, _) => {
+      allLabels.push(monthNames[month] + ", " + year);
+      inputData.push(monthlyResults[year][month]);
+  }))
+
+  //Iske neeche haath mat lagaio agar samay pyara ho to
+
+  const ctx1 = document.getElementById("monthlyChart");
+
+  new Chart(ctx1, {
+    type: "bar",
+    data: {
+      labels: allLabels,
+      datasets: [
+        {
+          label: labelofLegend,
+          data: inputData,
+          backgroundColor: [
+            "rgba(255, 159, 64, 0.8)",
+          ],
+          borderColor: [
+            "rgb(255, 159, 64)",
+          ],
+
+          hoverOffset: 25,
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      onClick: (e) => {
+        const canvasPosition = getRelativePosition(e, chart);
+
+        //   Substitute the appropriate scale IDs
+        const dataX = chart.scales.x.getValueForPixel(canvasPosition.x);
+        const dataY = chart.scales.y.getValueForPixel(canvasPosition.y);
+      },
+      scales: {
+        display: true,
+      },
+      plugins: {
+        legend: {
+          position: "top",
+          align: "end",
+        },
+      },
+      animation:true,
+    },
+  });
+</script>

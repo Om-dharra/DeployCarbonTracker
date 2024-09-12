@@ -1,0 +1,27 @@
+
+<% layout('layout/boilerplate') -%>
+<div class="border p-3 mx-auto w-50 mt-5">
+    <form action="/BusinessDb" method="post">
+        <div class="mb-3">
+            <label for="Bname" class="form-label">Company Name</label>
+            <input type="text" id="Bname" name="Bname" class="form-control">
+
+        </div>
+        <div class="mb-3">
+            <label for="Industry" class="form-label">Industry Name</label>
+            <input type="text" id="Industry" name="Industry" class="form-control">
+
+        </div>
+        <div class="mb-3">
+            <label for="NoOfEmployees">Number Of Employees&nbsp;:&nbsp;</label>
+            <input type="number" name="NoOfEmployees" id="NoOfEmployees"  size="70" min="0">
+        </div>
+        <div class="mb-3">
+            <label for="WFHpercent">Work From Home Percentage&nbsp;:&nbsp; </label>
+            <input type="number" name="WFHpercent" id="WFHpercent" size="70" min="0">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+</div>

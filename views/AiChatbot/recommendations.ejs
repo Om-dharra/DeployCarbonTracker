@@ -1,0 +1,143 @@
+<% layout('layout/boilerplate') -%>
+<link rel="stylesheet" href="/styles/ai.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <section>
+
+    <div class="row">
+      <div class="box box-green">
+        <div class="title">Analysis</div>
+        <div class="title-content-space"></div>
+        <div class="content">
+          <span>
+            <%=analysis%>
+          </span>
+        </div>
+      </div>
+
+      <div class="space-50"></div>
+
+      <div class="box box-yellow">
+        <div class="title">Performance</div>
+        <div class="title-content-space"></div>
+        <div class="content">
+          <span> <%=performance%> </span>
+        </div>
+      </div>
+    </div>
+    <div class="barChart">
+      <canvas id="barChart"></canvas>
+      <div style="display: none;" id="arr"><%=Arr%></div>
+      <div style="display: none;" id="arrLen"><%=len%></div>
+      <div style="display: none;" id="avg"><%=average%></div>
+  
+    </div>
+    <div class="box box-purple">
+      <div class="title">Comparison</div>
+      <div class="title-content-space"></div>
+      <div class="content">
+        <img width="256px" height="256px" id="sbti"
+          src="https://sustainabletravel.org/wp-content/uploads/Carbon-Footprint-Tourism-Chart-STI-Web-2.png" alt="" />
+        <div style="width: 124px"></div>
+        <span> <%= overview %>.<br> Your result: <%=result/1000%> tonnes. </span>
+      </div>
+    </div>
+    <div class="box box-blue">
+      <div class="title">Recommendations</div>
+      <%= recommendations %>
+    </div>
+
+</section>
+
+<script>
+  const ele1=document.getElementById("arr");
+  var v1=ele1.innerHTML;
+  const ele2=document.getElementById("arrLen");
+  var v2=ele2.innerHTML;
+  const ele3=document.getElementById("avg");
+  var avg=ele3.innerHTML;
+  let allLabels = ["You"];
+  for(let i=1;i<=v2;i++){
+    if(i==v2){
+      allLabels.push("Ideal");
+      continue;
+    }
+    allLabels.push("Other"+i);
+  }
+  let inputData = [];
+  if(v2>1){
+    inputData=v1.split(",");
+    inputData.push(avg/1000000);
+  }else{
+    inputData.push(v1);
+    inputData.push(avg/1000000);
+  }
+  console.log(inputData);
+  console.log(v1);
+  const labelofLegend = "thousand tonnes";
+  //Iske neeche haath mat lagaio agar samay pyara ho to
+
+  const ctx1 = document.getElementById("barChart");
+
+  new Chart(ctx1, {
+    type: "bar",
+    data: {
+      labels: allLabels,
+      datasets: [
+        {
+          label: labelofLegend,
+          data: inputData,
+          backgroundColor: [
+            "rgba(255, 159, 64, 0.8)",
+            "rgba(255, 205, 86, 0.8)",
+            "rgba(75, 192, 192, 0.8)",
+            "rgba(54, 162, 235, 0.8)",
+            "rgba(153, 102, 255, 0.8)",
+            "rgba(201, 203, 207, 0.8)",
+            "rgba(218, 112, 214, 0.8)", // Orchid
+            "rgba(255, 99, 132, 0.8)",
+            "rgba(46, 139, 87, 0.8)", // Sea Green
+            "rgba(0, 128, 128, 0.8)", // Teal
+          ],
+          borderColor: [
+            "rgb(255, 159, 64)",
+            "rgb(255, 205, 86)",
+            "rgb(75, 192, 192)",
+            "rgb(54, 162, 235)",
+            "rgb(153, 102, 255)",
+            "rgb(201, 203, 207)",
+            "rgb(218, 112, 214)", // Orchid
+            "rgb(255, 99, 132)",
+            "rgb(46, 139, 87)", // Sea Green
+            "rgb(0, 128, 128)", // Teal
+          ],
+
+          hoverOffset: 25,
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      onClick: (e) => {
+        const canvasPosition = getRelativePosition(e, chart);
+
+        //   Substitute the appropriate scale IDs
+        const dataX = chart.scales.x.getValueForPixel(canvasPosition.x);
+        const dataY = chart.scales.y.getValueForPixel(canvasPosition.y);
+      },
+      scales: {
+        display: true,
+      },
+      plugins: {
+        legend: {
+          position: "top",
+          align: "end",
+        },
+      },
+      layout: {
+        padding: {
+          bottom: 30,
+        },
+      },
+    },
+  });
+</script>

@@ -1,0 +1,27 @@
+<% layout('./layout/boilerplate') %>
+<link rel="stylesheet" href="/styles/bstyles.css" />
+<div class="content">
+  <h2>Your Businesses:</h2>
+  <table>
+    <tr>
+      <th>S.No.</th>
+      <th>Name</th>
+      <th>No. of Employees</th>
+      <th>Total Carbon Emitted (in KG)</th>
+      <th>Last Updated</th>
+      <th></th>
+    </tr>
+    <% businesses.forEach((b, i)=> {%>
+    <tr>
+      <td><%=i+1%></td>
+      <td><%=b.Bname%></td>
+      <td><%=b.NoOfEmployees%></td>
+      <td><%=b.Result%></td>
+      <td><%=toReadableDate(lastUpdated[i])%></td>
+      <td style="padding-left: 40px">
+        <a class="read" href="/dashboard/<%= b._id %>"> Take a Look </a>
+      </td>
+    </tr>
+    <%})%>
+  </table>
+</div>
