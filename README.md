@@ -1,13 +1,20 @@
 # Carbon Tracker
-
 A web application to help users monitor and manage their carbon footprint. By logging daily activities and their associated carbon emissions, users can gain insights into their environmental impact and work toward a more sustainable lifestyle.
+<pre>
+  ●	Utilized Node.js , Express.js and MongoDB for a responsive and scalable backend.
+  ●	Integrated ChatGPT API for customized company data feedback.
+  ●	Developed interactive visualization to help businesses understand their carbon footprint.
+  ●	Collaborated with Founder of Accacia to identify key metrics and customize the tracking system
+</pre>
+
 
 ## 🌐 Live Demo
 
 [deploycarbontracker.onrender.com](https://deploycarbontracker.onrender.com/login)
 
 ## 📁 Project Structure
-DeployCarbonTracker/
+<pre>
+  DeployCarbonTracker/
 ├── models/ # Mongoose schemas
 ├── routes/ # Express route handlers
 ├── views/ # EJS templates
@@ -16,6 +23,9 @@ DeployCarbonTracker/
 ├── seedData.js # Database seeding script (example dataset 1)
 ├── seedData2.js # Database seeding script (example dataset 2)
 └── index.js # Application entry point
+  
+</pre>
+
 
 ## 🚀 Features
 
