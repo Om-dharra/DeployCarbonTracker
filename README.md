@@ -7,7 +7,15 @@ A web application to help users monitor and manage their carbon footprint. By lo
 [deploycarbontracker.onrender.com](https://deploycarbontracker.onrender.com/login)
 
 ## 📁 Project Structure
-
+DeployCarbonTracker/
+├── models/ # Mongoose schemas
+├── routes/ # Express route handlers
+├── views/ # EJS templates
+├── public/ # Static assets (CSS, JS, images)
+├── middleware.js # Custom middleware functions
+├── seedData.js # Database seeding script (example dataset 1)
+├── seedData2.js # Database seeding script (example dataset 2)
+└── index.js # Application entry point
 
 ## 🚀 Features
 
