@@ -141,33 +141,78 @@ router.post("/BusinessDb",isLoggedIn,async(req,res)=>{
         res.redirect(`/BuildingDb/${Bdetails._id}`);
     });
 })
-router.get("/Result/:businessid",isLoggedIn,async(req,res)=>{
-    const user=req.session.passport.user;
-    const {businessid}=req.params;
-    const Business=await BusinessDatabase.findById(businessid);
-    let value=parseInt(Business.Result);
-    console.log(value);
-    value=parseInt(value/1000);
-    const id1 = Business.Carbondatabase_B;
-    const id2 = Business.Carbondatabase_V;
-    const FootprintDatabase = await FootPrintDb.findById(id1);
-    const VehicleDatabase = await VehicleDb.findById(id2);
-    const electricity = (FootprintDatabase.electricity*(0.82))/1000;
-    // const Electric_v = 2000;
-    const naturalGas = (FootprintDatabase.naturalGas*(2.75))/1000;
-    const heatingOil = (FootprintDatabase.heatingOil*(3.15))/1000;
-    const coal = (FootprintDatabase.coal*(3300))/1000;
-    const lpg = (FootprintDatabase.lpg*(2.99))/1000;
-    const propane = (FootprintDatabase.propane*(2.99))/1000;
-    const diesel = (FootprintDatabase.diesel*(2.7*0.84))/1000;
-    const diesel_v = (VehicleDatabase.diesel*(2.7*0.84))/1000;
-    const refrigerant = (FootprintDatabase.refrigerantAmount*(675))/1000;
-    const petrol_v = (VehicleDatabase.petrol*(8.78*0.264))/1000;
-    const cng_v = (VehicleDatabase.cng*(2.666))/1000;
-    const Arr=[electricity,naturalGas,heatingOil,coal,lpg,propane,diesel,diesel_v,refrigerant,petrol_v,cng_v]
-    // console.log(value);
-    res.render("homePage/Result",{value,businessid,Arr});
-})
+router.get("/Result/:businessid", isLoggedIn, async (req, res) => {
+    try { // Good practice to wrap async route handlers in try...catch
+        const user = req.session.passport.user; // Assuming this is used elsewhere or for auth
+        const { businessid } = req.params;
+
+        const Business = await BusinessDatabase.findById(businessid);
+
+        // 1. Handle if Business itself is not found
+        if (!Business) {
+            // You might want to render an error page or send a 404
+            console.error(`Business with ID ${businessid} not found.`);
+            return res.status(404).render("errorPage", { message: "Business data not found." });
+        }
+
+        // 2. Safely parse Business.Result
+        // Use Number() for potentially non-integer strings, or stick to parseInt with a radix
+        // Provide a default of 0 if Business.Result is null, undefined, or not a number.
+        let rawResult = Business.Result; // e.g., "50000" or null or undefined
+        let numericResult = parseInt(rawResult, 10); // Always provide radix for parseInt
+        
+        let value = 0; // Default value
+        if (!isNaN(numericResult)) { // Check if parsing was successful
+            value = Math.floor(numericResult / 1000); // Use Math.floor for integer division intention
+        }
+        console.log("Calculated value (Result/1000):", value);
+
+        // 3. Safely get IDs and fetch related databases
+        const id1 = Business.Carbondatabase_B; // This might be null/undefined if not set
+        const id2 = Business.Carbondatabase_V; // This might be null/undefined if not set
+
+        // Fetch related DBs only if IDs exist, otherwise they'll be null
+        const FootprintDatabase = id1 ? await FootPrintDb.findById(id1) : null;
+        const VehicleDatabase = id2 ? await VehicleDb.findById(id2) : null;
+
+        // 4. Perform calculations safely using optional chaining and nullish coalescing
+        // (object?.property ?? defaultValue)
+
+        const electricity = ((FootprintDatabase?.electricity ?? 0) * 0.82) / 1000;
+        const naturalGas = ((FootprintDatabase?.naturalGas ?? 0) * 2.75) / 1000;
+        const heatingOil = ((FootprintDatabase?.heatingOil ?? 0) * 3.15) / 1000;
+        const coal = ((FootprintDatabase?.coal ?? 0) * 3300) / 1000;
+        const lpg = ((FootprintDatabase?.lpg ?? 0) * 2.99) / 1000;
+        const propane = ((FootprintDatabase?.propane ?? 0) * 2.99) / 1000;
+        const diesel_footprint = ((FootprintDatabase?.diesel ?? 0) * 2.7 * 0.84) / 1000; // Renamed to avoid conflict
+        const refrigerant = ((FootprintDatabase?.refrigerantAmount ?? 0) * 675) / 1000;
+
+        const diesel_v = ((VehicleDatabase?.diesel ?? 0) * 2.7 * 0.84) / 1000;
+        const petrol_v = ((VehicleDatabase?.petrol ?? 0) * 8.78 * 0.264) / 1000;
+        const cng_v = ((VehicleDatabase?.cng ?? 0) * 2.666) / 1000;
+
+        const Arr = [
+            electricity,
+            naturalGas,
+            heatingOil,
+            coal,
+            lpg,
+            propane,
+            diesel_footprint, // Use the renamed variable
+            diesel_v,
+            refrigerant,
+            petrol_v,
+            cng_v
+        ];
+
+        res.render("homePage/Result", { value, businessid, Arr });
+
+    } catch (error) {
+        console.error("Error in /Result/:businessid route:", error);
+        // Render a generic error page or send a 500 status
+        res.status(500).render("errorPage", { message: "An unexpected error occurred." });
+    }
+});
 router.get("/BuildingDb/:businessid",isLoggedIn,(req,res)=>{
     const {businessid}=req.params;
 
