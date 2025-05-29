@@ -4,7 +4,7 @@
   <section>
 
     <div class="row">
-      <div class="box box-green">
+      <div class="box box-green" style="width: fit-content;">
         <div class="title">Analysis</div>
         <div class="title-content-space"></div>
         <div class="content">
@@ -17,11 +17,7 @@
       <div class="space-50"></div>
 
       <div class="box box-yellow">
-        <div class="title">Performance</div>
-        <div class="title-content-space"></div>
-        <div class="content">
-          <span> <%=performance%> </span>
-        </div>
+        
       </div>
     </div>
     <div class="barChart">
@@ -35,8 +31,6 @@
       <div class="title">Comparison</div>
       <div class="title-content-space"></div>
       <div class="content">
-        <img width="256px" height="256px" id="sbti"
-          src="https://github.com/Om-dharra/CarbonLens/blob/main/Screenshot%202024-01-10%20202630.png?raw=true" alt="" />
         <div style="width: 124px"></div>
         <span> <%= overview %>.<br> Your result: <%=result/1000%> tonnes. </span>
       </div>

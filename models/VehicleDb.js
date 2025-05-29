@@ -1,13 +1,22 @@
+// models/VehicleDb.js
 const mongoose=require('mongoose');
 
-const VehicleDatabase=new mongoose.Schema({
-    Electric_v:Number,
-    petrol:Number,
-    diesel: Number,
-    cng: Number,
-    lpg: Number
-})
+const VehicleDbSchema=new mongoose.Schema({
+    // ... your existing fields like companyname, typeofvehicle ...
+    petrol:{
+        type:Number,
+        default:0
+    },
+    diesel:{ // Add this field
+        type:Number,
+        default:0
+    },
+    // ... any other fields ...
+    owner:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }
+});
 
-const VehicleDb=mongoose.model('VehicleDb',VehicleDatabase);
-
-module.exports=VehicleDb
+const VehicleData=mongoose.model('VehicleData',VehicleDbSchema);
+module.exports=VehicleData;
