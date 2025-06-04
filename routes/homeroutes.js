@@ -11,7 +11,7 @@ const ResultHistoryDb = require("../models/ResultHistoryDb");
 
 router.get("/dashboard",isLoggedIn,async(req,res)=>{
     const user=req.session.passport.user;
-    console.log(user);
+    // console.log(user);
     const results=await BusinessDatabase.findOne({user:user});
     let id;
     let CarbonEmission;
@@ -41,7 +41,7 @@ router.get("/dashboard",isLoggedIn,async(req,res)=>{
         // }
     }
     console
-    console.log(lastUpdated);
+    // console.log(lastUpdated);
 
     const toReadableDate = (date) => {
         if (!date) {
@@ -60,7 +60,7 @@ router.get("/dashboard",isLoggedIn,async(req,res)=>{
         return `${day}/${month}/${year} ${hour}:${minute} ${ampm}`;
     }
 
-    console.log(businesses);
+    // console.log(businesses);
     // console.log(resultHistory);
     res.render("dashResult/dashboard",{Bname,id,CarbonEmission, businesses, lastUpdated, toReadableDate});
 })
@@ -77,7 +77,7 @@ router.get("/dashboard/:businessid",isLoggedIn,async(req,res)=>{
         model: ResultHistoryDb
     }).exec();
     let results = business.Carbondatabase_R;
-    console.log(results);
+    // console.log(results);
 
     // Convert the results to something monthly
     let monthlyResults = {};
@@ -165,7 +165,7 @@ router.get("/Result/:businessid", isLoggedIn, async (req, res) => {
         if (!isNaN(numericResult)) { // Check if parsing was successful
             value = Math.floor(numericResult / 1000); // Use Math.floor for integer division intention
         }
-        console.log("Calculated value (Result/1000):", value);
+        // console.log("Calculated value (Result/1000):", value);
 
         // 3. Safely get IDs and fetch related databases
         const id1 = Business.Carbondatabase_B; // This might be null/undefined if not set
@@ -231,7 +231,7 @@ router.post("/ProductCF/:businessid", isLoggedIn, async (req, res) => {
     const user=req.session.passport.user;
     const { businessid } = req.params;
     const Obj=req.body;
-    console.log(Obj);
+    // console.log(Obj);
     let value=0;
     for (let key in Obj) {
         if(key=='coalProduced'){
@@ -255,7 +255,7 @@ router.post("/ProductCF/:businessid", isLoggedIn, async (req, res) => {
         }
         
     }
-    console.log(value);
+    // console.log(value);
     await BusinessDatabase.findByIdAndUpdate(businessid,{Average:value});
     res.redirect(`/Result/${businessid}`);
 
@@ -285,7 +285,7 @@ router.post("/calulateCF/:businessid",isLoggedIn,async(req,res)=>{
         currResult+=(Ef*values[i]);
         // console.log(sum);
     }
-    console.log(currResult);
+    // console.log(currResult);
     const BusinessV=await BusinessDatabase.findById(businessid).populate("Carbondatabase_R");
     const resultHistoryObj = await ResultHistoryDb.create({date:Date.now(),result:currResult,user});
     BusinessV.Carbondatabase_R.push(resultHistoryObj);
@@ -314,7 +314,7 @@ router.post("/CalculateFinal/:businessid",isLoggedIn,async(req,res)=>{
     let currResult = 0;
     for(let i=0;i<4;i++){
         const emissionDb=await EmissionFactor.findOne({entityName:`${Arr[i]}`}).exec();
-        console.log(emissionDb);
+        // console.log(emissionDb);
         const Ef=emissionDb.emissionFactor;
         if(i==0){
             values[i]*=0.264;

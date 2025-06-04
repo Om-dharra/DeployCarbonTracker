@@ -87,7 +87,7 @@ async function callGeminiAPI(prompt) {
             const candidate = result.response.candidates[0];
             if (candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
                 let responseText = candidate.content.parts[0].text;
-                console.log("Raw Gemini response text:", responseText);
+                // console.log("Raw Gemini response text:", responseText);
                 // With responseMimeType: "application/json", it should already be clean JSON.
                 // If not using responseMimeType, you might need to strip markdown:
                 // if (responseText.startsWith("```json")) {
@@ -124,7 +124,7 @@ router.post('/answer/:businessid', isLoggedIn, async function (req, res) {
             req.flash('error', 'Business not found.');
             return res.redirect('back'); // Or to a relevant page
         }
-        console.log("Business Data for AI:", Business);
+        // console.log("Business Data for AI:", Business);
 
         let electricity = 0;
         if (Business.Carbondatabase_B) {
@@ -258,7 +258,7 @@ router.get("/newPage/:businessid", isLoggedIn, async (req, res) => {
             };
         }
 
-        console.log("Parsed Gemini Response for rendering:", aiResponseJson);
+        // console.log("Parsed Gemini Response for rendering:", aiResponseJson);
 
         // Clear the session data after use
         delete req.session.aiData;
