@@ -11,11 +11,14 @@ const VehicleDbSchema=new mongoose.Schema({
         type:Number,
         default:0
     },
-    // ... any other fields ...
-    owner:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    }
+    cng:{ // Add this field
+        type:Number,
+        default:0
+    },
+    lpg:{
+        type:Number,
+        default:0
+    },
 });
 
 const VehicleDb=mongoose.model('VehicleDb',VehicleDbSchema);

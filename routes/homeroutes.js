@@ -213,19 +213,28 @@ router.get("/Result/:businessid", isLoggedIn, async (req, res) => {
         res.status(500).render("errorPage", { message: "An unexpected error occurred." });
     }
 });
-router.get("/BuildingDb/:businessid",isLoggedIn,(req,res)=>{
+router.get("/BuildingDb/:businessid",isLoggedIn,async(req,res)=>{
     const {businessid}=req.params;
-
-    res.render("homePage/buildingDataInput",{businessid});
+    const Business = await BusinessDatabase.findById(businessid);
+    const id1 = Business.Carbondatabase_B;
+    const buildingData = id1 ? await FootPrintDb.findById(id1) : null; // Use null if no building data exists
+    res.render("homePage/buildingDataInput", { businessid, buildingData });
 })
 
 router.get("/VehicleDb/:businessid",isLoggedIn,async(req,res)=>{
     const {businessid}=req.params;
-    res.render("homePage/vehicleDataInput",{businessid});
+    const Business = await BusinessDatabase.findById(businessid);
+    const id2 = Business.Carbondatabase_V;
+    const vehicleData = id2 ? await VehicleDb.findById(id2) : null; // Use null if no vehicle data exists
+    if (!vehicleData) {
+        // If no vehicle data exists, you might want to create a new one or handle it accordingly
+        console.log("No vehicle data found for this business.");
+    }
+    res.render("homePage/vehicleDataInput", { businessid, vehicleData });
 })
 router.get("/SupplyDb/:businessid",isLoggedIn,async(req,res)=>{
     const {businessid}=req.params;
-    res.render("homePage/supplyChain",{businessid});
+    res.render("homePage/supplyChain",{ businessid });
 })
 router.post("/ProductCF/:businessid", isLoggedIn, async (req, res) => {
     const user=req.session.passport.user;
@@ -261,80 +270,204 @@ router.post("/ProductCF/:businessid", isLoggedIn, async (req, res) => {
 
 })
 
-router.post("/calulateCF/:businessid",isLoggedIn,async(req,res)=>{
-    const user=req.session.passport.user;
-    const {businessid}=req.params;
-    const {electricity,naturalGas,heatingOil,coal,lpg,propane,diesel,refrigerant,refrigerantAmount}=req.body;
-    const Arr=["electricity","naturalGas","heatingOil","coal","lpg","propane","diesel"];
-    Arr.push(refrigerant);
-    const values=[electricity,naturalGas,heatingOil,coal,lpg,propane,diesel,refrigerantAmount];
-    const Business=await BusinessDatabase.findById(businessid).populate("Carbondatabase_B");
-    const FootprintDatabase=await FootPrintDb.create({electricity,naturalGas,heatingOil,coal,lpg,propane,diesel,refrigerant,refrigerantAmount});
-    Business.Carbondatabase_B.push(FootprintDatabase);
-    await Business.save();
-    //Saving Result
-    const Bus=await BusinessDatabase.findById(businessid);
-    const val=Bus.Result;
-    let sum=parseInt(val);
-    let currResult = 0;
-    for(let i=0;i<8;i++){
-        const emissionDb=await EmissionFactor.findOne({entityName:`${Arr[i]}`}).exec();
-        console.log(emissionDb);
-        const Ef=emissionDb.emissionFactor;
-        console.log(values[i]);
-        currResult+=(Ef*values[i]);
-        // console.log(sum);
+router.post("/calulateCF/:businessid", isLoggedIn, async (req, res) => {
+    const user = req.session.passport.user;
+    const { businessid } = req.params;
+    // If data might already exist, merge with previous values
+    let Business = await BusinessDatabase.findById(businessid).populate("Carbondatabase_B");
+    let prevData = {};
+    if (Business.Carbondatabase_B && Business.Carbondatabase_B.length > 0) {
+        // Get the latest entry's values
+        const prevEntry = await FootPrintDb.findById(Business.Carbondatabase_B[Business.Carbondatabase_B.length - 1]._id);
+        if (prevEntry) {
+            prevData = {
+                electricity: prevEntry.electricity || 0,
+                naturalGas: prevEntry.naturalGas || 0,
+                heatingOil: prevEntry.heatingOil || 0,
+                coal: prevEntry.coal || 0,
+                lpg: prevEntry.lpg || 0,
+                propane: prevEntry.propane || 0,
+                diesel: prevEntry.diesel || 0,
+                refrigerant: prevEntry.refrigerant || 0,
+                refrigerantAmount: prevEntry.refrigerantAmount || 0
+            };
+        }
     }
-    // console.log(currResult);
-    const BusinessV=await BusinessDatabase.findById(businessid).populate("Carbondatabase_R");
-    const resultHistoryObj = await ResultHistoryDb.create({date:Date.now(),result:currResult,user});
-    BusinessV.Carbondatabase_R.push(resultHistoryObj);
-    await BusinessV.save();
-    sum+=currResult;
-    await BusinessDatabase.findByIdAndUpdate(businessid,{Result:sum});
+
+    const {
+        electricity = prevData.electricity || 0,
+        naturalGas = prevData.naturalGas || 0,
+        heatingOil = prevData.heatingOil || 0,
+        coal = prevData.coal || 0,
+        lpg = prevData.lpg || 0,
+        propane = prevData.propane || 0,
+        diesel = prevData.diesel || 0,
+        refrigerant = prevData.refrigerant || 0,
+        refrigerantAmount = prevData.refrigerantAmount || 0
+    } = req.body;
+
+    // Find or create FootPrintDb for this business
+    let footprintDb;
+    if (Business.Carbondatabase_B && Business.Carbondatabase_B.length > 0) {
+        // Update the latest entry
+        footprintDb = await FootPrintDb.findByIdAndUpdate(
+            Business.Carbondatabase_B[Business.Carbondatabase_B.length - 1]._id,
+            { electricity, naturalGas, heatingOil, coal, lpg, propane, diesel, refrigerant, refrigerantAmount },
+            { new: true }
+        );
+    } else {
+        // Create new entry
+        footprintDb = await FootPrintDb.create({ electricity, naturalGas, heatingOil, coal, lpg, propane, diesel, refrigerant, refrigerantAmount });
+        Business.Carbondatabase_B = [footprintDb._id];
+        await Business.save();
+    }
+
+    // Calculate emissions
+    const Arr = ["electricity", "naturalGas", "heatingOil", "coal", "lpg", "propane", "diesel", "refrigerant"];
+    const values = [electricity, naturalGas, heatingOil, coal, lpg, propane, diesel, refrigerantAmount];
+    let currResult = 0;
+    for (let i = 0; i < Arr.length; i++) {
+        const emissionDb = await EmissionFactor.findOne({ entityName: Arr[i] }).exec();
+        if (emissionDb) {
+            currResult += (emissionDb.emissionFactor * (values[i] || 0));
+        }
+    }
+
+    // Save/update ResultHistoryDb
+    let BusinessV = await BusinessDatabase.findById(businessid).populate("Carbondatabase_R");
+    let resultHistoryObj;
+    if (BusinessV.Carbondatabase_R && BusinessV.Carbondatabase_R.length > 0) {
+        // Update the latest result history
+        resultHistoryObj = await ResultHistoryDb.findByIdAndUpdate(
+            BusinessV.Carbondatabase_R[BusinessV.Carbondatabase_R.length - 1]._id,
+            { date: Date.now(), result: currResult, user },
+            { new: true }
+        );
+    } else {
+        // Create new result history
+        resultHistoryObj = await ResultHistoryDb.create({ date: Date.now(), result: currResult, user });
+        BusinessV.Carbondatabase_R = [resultHistoryObj._id];
+        await BusinessV.save();
+    }
+
+    // Update Business Result
+    let sum = parseInt(Business.Result) || 0;
+    sum += currResult;
+    await BusinessDatabase.findByIdAndUpdate(businessid, { Result: sum });
+
     res.redirect(`/VehicleDb/${businessid}`);
-})
+});
 
-router.post("/CalculateFinal/:businessid",isLoggedIn,async(req,res)=>{
-    const user=req.session.passport.user;
-    const {businessid}=req.params;
-    const{petrol,diesel,cng,lpg}=req.body;
-    const Arr=["petrol","diesel","cng","lpg"];
-    const values=[petrol,diesel,cng,lpg];
+router.post("/CalculateFinal/:businessid", isLoggedIn, async (req, res) => {
+    const user = req.session.passport.user;
+    const { businessid } = req.params;
+    let { petrol = 0, diesel = 0, cng = 0, lpg = 0 } = req.body;
 
-    //Saving Database
-    const Business=await BusinessDatabase.findById(businessid).populate("Carbondatabase_V");
-    const VehicleDatabase=await VehicleDb.create({petrol,diesel,cng,lpg});
-    Business.Carbondatabase_V.push(VehicleDatabase);
-    await Business.save();
-    //Saving Result
-    const Bus=await BusinessDatabase.findById(businessid);
-    const val=Bus.Result;
-    let sum=parseInt(val);
-    let currResult = 0;
-    for(let i=0;i<4;i++){
-        const emissionDb=await EmissionFactor.findOne({entityName:`${Arr[i]}`}).exec();
-        // console.log(emissionDb);
-        const Ef=emissionDb.emissionFactor;
-        if(i==0){
-            values[i]*=0.264;
-        }
-        if(i==1){
-            values[i]*=0.84;
-        }
-        currResult+=(Ef*values[i]);
-        // console.log(sum);
+    // Find or create VehicleDb for this business
+    let Business = await BusinessDatabase.findById(businessid).populate("Carbondatabase_V");
+    let vehicleDb;
+    if (Business.Carbondatabase_V && Business.Carbondatabase_V.length > 0) {
+        // Update the latest entry
+        vehicleDb = await VehicleDb.findByIdAndUpdate(
+            Business.Carbondatabase_V[Business.Carbondatabase_V.length - 1]._id,
+            { petrol, diesel, cng, lpg },
+            { new: true }
+        );
+    } else {
+        // Create new entry
+        vehicleDb = await VehicleDb.create({ petrol, diesel, cng, lpg });
+        Business.Carbondatabase_V = [vehicleDb._id];
+        await Business.save();
     }
-    console.log(currResult);
-    const BusinessV=await BusinessDatabase.findById(businessid).populate("Carbondatabase_R");
-    const resultHistoryObj = await ResultHistoryDb.create({date:Date.now(),result:currResult,user});
-    BusinessV.Carbondatabase_R.push(resultHistoryObj);
-    await BusinessV.save();
-    sum+=currResult;
-    await BusinessDatabase.findByIdAndUpdate(businessid,{Result:sum});
-    res.redirect(`/SupplyDb/${businessid}`); 
-    
-})
 
-module.exports=router
+    // Calculate emissions
+    const Arr = ["petrol", "diesel", "cng", "lpg"];
+    let values = [petrol, diesel, cng, lpg];
+    let currResult = 0;
+    for (let i = 0; i < Arr.length; i++) {
+        const emissionDb = await EmissionFactor.findOne({ entityName: Arr[i] }).exec();
+        if (emissionDb) {
+            let val = values[i] || 0;
+            if (i === 0) val *= 0.264; // petrol
+            if (i === 1) val *= 0.84;  // diesel
+            currResult += (emissionDb.emissionFactor * val);
+        }
+    }
+
+    // Save/update ResultHistoryDb
+    let BusinessV = await BusinessDatabase.findById(businessid).populate("Carbondatabase_R");
+    let resultHistoryObj;
+    if (BusinessV.Carbondatabase_R && BusinessV.Carbondatabase_R.length > 0) {
+        // Update the latest result history
+        resultHistoryObj = await ResultHistoryDb.findByIdAndUpdate(
+            BusinessV.Carbondatabase_R[BusinessV.Carbondatabase_R.length - 1]._id,
+            { date: Date.now(), result: currResult, user },
+            { new: true }
+        );
+    } else {
+        // Create new result history
+        resultHistoryObj = await ResultHistoryDb.create({ date: Date.now(), result: currResult, user });
+        BusinessV.Carbondatabase_R = [resultHistoryObj._id];
+        await BusinessV.save();
+    }
+
+    // Update Business Result
+    let sum = parseInt(Business.Result) || 0;
+    sum += currResult;
+    await BusinessDatabase.findByIdAndUpdate(businessid, { Result: sum });
+
+    res.redirect(`/SupplyDb/${businessid}`);
+});
+
+// Update BusinessDb POST to update if exists
+router.post("/BusinessDb", isLoggedIn, async (req, res) => {
+    const user = req.session.passport.user;
+    const { Bname, Industry, NoOfEmployees, WFHpercent } = req.body;
+    let Result = NoOfEmployees * (100 - WFHpercent) / 100 * 1.2;
+
+    // Check if business already exists for this user and name
+    let Bdetails = await BusinessDatabase.findOne({ user, Bname });
+    if (Bdetails) {
+        // Update existing business
+        await BusinessDatabase.findByIdAndUpdate(Bdetails._id, { Industry, NoOfEmployees, WFHpercent, Result });
+    } else {
+        // Create new business
+        Bdetails = await BusinessDatabase.create({ user, Bname, Industry, NoOfEmployees, WFHpercent, Result });
+    }
+    req.session.Bid = Bdetails._id;
+    req.session.save(function () {
+        req.flash("Your Business Details are added Successfully");
+        res.redirect(`/BuildingDb/${Bdetails._id}`);
+    });
+});
+
+// Update ProductCF POST to update if exists
+router.post("/ProductCF/:businessid", isLoggedIn, async (req, res) => {
+    const user = req.session.passport.user;
+    const { businessid } = req.params;
+    const Obj = req.body;
+    let value = 0;
+    for (let key in Obj) {
+        if (key == 'coalProduced') {
+            value += (Obj[key] * 1987);
+        }
+        if (key == 'smallCars') {
+            value += (Obj[key] * 5000);
+        }
+        if (key == 'midSizeCars') {
+            value += (Obj[key] * 8000);
+        }
+        if (key == 'largeSUVs') {
+            value += (Obj[key] * 11000);
+        }
+        if (key == 'electricVehicles') {
+            value += (Obj[key] * 9000);
+        }
+    }
+    // Update Average if already exists, else set it
+    await BusinessDatabase.findByIdAndUpdate(businessid, { Average: value });
+    res.redirect(`/Result/${businessid}`);
+});
+
+module.exports = router
 

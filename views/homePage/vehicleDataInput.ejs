@@ -23,6 +23,7 @@
                   id="petrol"
                   name="petrol"
                   placeholder="Scope 1"
+                  value="<%=vehicleData? vehicleData.petrol:"" %>"
                   required
                 />
               </div>
@@ -35,18 +36,19 @@
                   id="diesel"
                   name="diesel"
                   placeholder="Scope 1"
+                  value="<%=vehicleData? vehicleData.diesel:"" %>"
                   required
                 />
               </div>
       
               <div class="aks-input-row">
                 <label class="aks-input-label" for="cng">CNG (kg) :</label>
-                <input class="aks-input" type="number" id="cng" name="cng" placeholder="Scope 1" />
+                <input class="aks-input" type="number" id="cng" name="cng" placeholder="Scope 1" value="<%=vehicleData? vehicleData.cng:"" %>" />
               </div>
       
               <div class="aks-input-row">
                 <label class="aks-input-label" for="lpg">LPG (kg):</label>
-                <input class="aks-input" type="number" id="lpg" name="lpg" placeholder="Scope 1" />
+                <input class="aks-input" type="number" id="lpg" name="lpg" placeholder="Scope 1" value="<%=vehicleData? vehicleData.lpg:"" %>" />
               </div>
       
               <div class="aks-input-row">
