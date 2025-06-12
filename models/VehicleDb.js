@@ -18,5 +18,5 @@ const VehicleDbSchema=new mongoose.Schema({
     }
 });
 
-const VehicleData=mongoose.model('VehicleData',VehicleDbSchema);
-module.exports=VehicleData;
+const VehicleDb=mongoose.model('VehicleDb',VehicleDbSchema);
+module.exports=VehicleDb;
