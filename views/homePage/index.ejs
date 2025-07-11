@@ -1,4 +1,14 @@
 <% layout('layout/boilerplate') -%>
+<style>
+  .card {
+  width: 190px;
+  height: 254px;
+  border-radius: 30px;
+  background: #e0e0e0;
+  box-shadow: 15px 15px 30px #bebebe,
+             -15px -15px 30px #ffffff;
+}
+</style>
 <link rel="stylesheet" href="styles/home.css">
   <section class="contents">
     <div id="carouselExampleCaptions" class="carousel slide">
@@ -45,17 +55,17 @@
     <br><br>
     <h1>CarbonLens</h1>
     <h2>Empower Your Sustainability Journey: Unlocking Carbon Zero</h2>
-    <div class="title">
+    <div class="cards-container" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
 
 
-      <div class="card cardleft">
+      <div class="card">
         <h5>
           At CarbonLens, we excel in precise carbon footprint calculation and
           analysis. Our advanced platform harnesses data to reveal profound
           insights, enabling strategic planning for sustainable practices.
         </h5>
       </div>
-      <div class="card cardright">
+      <div class="card">
         <h5>
           Dive into our comprehensive tracking and meticulous analytics to
           thoroughly understand your environmental impact. Our tool empowers
@@ -63,13 +73,13 @@
           greener future.
         </h5>
       </div>
-      <div class="card cardleft">
+      <div class="card">
         <h5>
           Specializing in empowering businesses, our platform unveils deep
           insights for strategic sustainability planning.
         </h5>
       </div>
-      <div class="card cardright">
+      <div class="card">
         <h5>
           Utilize our
           unparalleled precision to make informed decisions that steer you

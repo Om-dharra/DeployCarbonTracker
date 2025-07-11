@@ -1,14 +1,56 @@
 <% layout('./layout/boilerplate') %>
 
 <style>
-  table {
-    border-collapse: collapse;
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f8f9fa;
+    margin: 0;
+    padding: 0;
   }
 
-  th,
-  td {
+  section {
+    margin: 40px auto;
+    max-width: 1200px;
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 32px;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 32px;
+    margin-bottom: 32px;
+  }
+
+  .row h2 {
+    margin-right: 32px;
+    color: #2d6a4f;
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .row h3 {
+    color: #40916c;
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-top: 8px;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    background: #fff;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  th, td {
     text-align: left;
-    padding: 8px;
+    padding: 12px 16px;
   }
 
   tr:nth-child(even) {
@@ -18,19 +60,8 @@
   th {
     background-color: #61c67a;
     color: white;
-  }
-
-  .row {
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    align-items: start;
-    margin: 25px;
-  }
-
-  .monthlyChart {
-    width: 50%;
-    height: 75%;
+    font-weight: 600;
+    font-size: 1rem;
   }
 
   .read {
@@ -38,16 +69,28 @@
     display: inline-block;
     border-radius: 0.5rem;
     width: 100%;
-    padding: 0.75rem 1.25rem;
+    padding: 0.5rem 1rem;
     text-align: center;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
+    font-size: 0.95rem;
     font-weight: 600;
+    background-color: #61c67a;
+    color: #fff;
+    transition: background 0.2s;
+    border: none;
+    cursor: pointer;
   }
 
-  .read {
-    background-color: #61c67a;
-    color: rgba(255, 255, 255, 1);
+  .read:hover {
+    background-color: #40916c;
+  }
+
+  .monthlyChart {
+    width: 50%;
+    min-width: 350px;
+    height: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 </style>
 
@@ -55,37 +98,46 @@
 
 <section>
   <div class="row">
-    <h2><%=business.Bname%></h2>
+    <h2><%= business.Bname %></h2>
     <h3>Monthly report</h3>
   </div>
   <div class="row">
-    <table style="width: 40%">
-      <tr>
-        <th>Month</th>
-        <th>Carbon Emission (in KG)</th>
-        <th></th>
-      </tr>
-      <% Object.keys(monthlyResults).forEach((year, i)=> {%> <%
-      Object.keys(monthlyResults[year]).forEach((month, i)=> {%> <%let result =
-      monthlyResults[year][month]%>
-      <tr>
-        <td><%=monthNames[month]%>, <%=year%></td>
-        <td><%=result.toFixed(2)%></td>
-        <td>
-          <a class="read" href="/Result/<%=businessid%>"> Details </a>
-        </td>
-      </tr>
-      <%})%> <%})%>
-      <tr>
-        <th>Total</th>
-        <th><%= business.Result%></th>
-        
-      </tr>
-      
-    </table>
-
-    <div style="width: 20px"></div>
-
+    <div style="width: 50%;">
+      <table>
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Carbon Emission (in KG)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% 
+            let total = 0;
+            Object.keys(monthlyResults).forEach(year => {
+              Object.keys(monthlyResults[year]).forEach(month => {
+          total += monthlyResults[year][month];
+          %>
+            <tr>
+              <td><%= monthNames[month] %>, <%= year %></td>
+              <td><%= monthlyResults[year][month] %></td>
+            </tr>
+          <%   });
+            });
+          %>
+          <tr style="font-weight: bold; background: #e9f5ee;">
+            <td>Total</td>
+            <td><%= total %></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2" style="text-align: right;">
+              <button class="read" onclick="window.location.href=`/Result/<%= business._id %>`">View Full Report</button>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
     <div class="monthlyChart">
       <canvas id="monthlyChart"></canvas>
     </div>
@@ -95,61 +147,37 @@
 <script>
   const monthlyResults = <%- JSON.stringify(monthlyResults) %>;
   const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "Octomber",
-    "November",
-    "December",
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
   ];
   const allLabels = [];
   const inputData = [];
   const labelofLegend = "Carbon Emission (in KG)";
-  Object.keys(monthlyResults).forEach((year, _) => Object.keys(monthlyResults[year]).forEach((month, _) => {
+  Object.keys(monthlyResults).forEach((year) => {
+    Object.keys(monthlyResults[year]).forEach((month) => {
       allLabels.push(monthNames[month] + ", " + year);
       inputData.push(monthlyResults[year][month]);
-  }))
-
-  //Iske neeche haath mat lagaio agar samay pyara ho to
+    });
+  });
 
   const ctx1 = document.getElementById("monthlyChart");
-
   new Chart(ctx1, {
     type: "bar",
     data: {
       labels: allLabels,
-      datasets: [
-        {
-          label: labelofLegend,
-          data: inputData,
-          backgroundColor: [
-            "rgba(255, 159, 64, 0.8)",
-          ],
-          borderColor: [
-            "rgb(255, 159, 64)",
-          ],
-
-          hoverOffset: 25,
-          borderWidth: 1,
-        },
-      ],
+      datasets: [{
+        label: labelofLegend,
+        data: inputData,
+        backgroundColor: "rgba(255, 159, 64, 0.8)",
+        borderColor: "rgb(255, 159, 64)",
+        borderWidth: 1,
+        hoverOffset: 25,
+      }],
     },
     options: {
-      onClick: (e) => {
-        const canvasPosition = getRelativePosition(e, chart);
-
-        //   Substitute the appropriate scale IDs
-        const dataX = chart.scales.x.getValueForPixel(canvasPosition.x);
-        const dataY = chart.scales.y.getValueForPixel(canvasPosition.y);
-      },
       scales: {
-        display: true,
+        x: { display: true },
+        y: { display: true }
       },
       plugins: {
         legend: {
@@ -157,7 +185,7 @@
           align: "end",
         },
       },
-      animation:true,
+      animation: true,
     },
   });
 </script>
