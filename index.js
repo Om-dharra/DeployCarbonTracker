@@ -11,7 +11,7 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/User");
-const port = 8080;
+const port = process.env.PORT || 8080 ;
 const seedData = require("./seedData");
 const seedData2 = require("./seedData2");
 
@@ -74,5 +74,5 @@ app.use(homeRoutes);
 app.use(gpt);
 
 app.listen(port, () =>
-  console.log(`Server listening at http://localhost:8080/login`)
+  console.log(`Server listening at http://localhost:${port}/login`)
 );
