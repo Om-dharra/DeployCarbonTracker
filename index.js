@@ -54,7 +54,9 @@ app.use(express.static("public"));
 app.use(session(sessionConfig));
 app.use(passport.authenticate("session"));
 app.use(flash());
-
+app.get('/', (req, res) => {
+  return res.redirect('/login');
+});
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
