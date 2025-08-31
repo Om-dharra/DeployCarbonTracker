@@ -1,7 +1,6 @@
-const allLabels = ["lakshit", "jain"];
-const inputData = [100, 134];
-const labelofLegend = "Dadbod";
-//Iske neeche haath mat lagaio agar samay pyara ho to
+// const allLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+// const inputData = [120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230];
+// const labelofLegend = "Emissions";
 
 const ctx1 = document.getElementById("monthlyChart");
 

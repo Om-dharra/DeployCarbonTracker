@@ -22,7 +22,7 @@
             id="electricity"
             name="electricity"
             placeholder="Scope 2"
-            value="<%=buildingData? buildingData.electricity:"" %>"
+           
             required
           />
         </div>
@@ -37,7 +37,7 @@
             id="naturalGas"
             name="naturalGas"
             placeholder="Scope 1"
-            value="<%=buildingData? buildingData.naturalGas:"" %>"
+           
             required
           />
         </div>
@@ -52,7 +52,7 @@
             id="heatingOil"
             name="heatingOil"
             placeholder="Scope 1"
-            value="<%=buildingData? buildingData.heatingOil:"" %>"
+           
             required
           />
         </div>
@@ -67,7 +67,7 @@
             id="coal"
             name="coal"
             placeholder="Scope 2"
-            value="<%=buildingData? buildingData.coal:"" %>"
+            
             required
           />
         </div>
@@ -80,7 +80,7 @@
             id="lpg"
             name="lpg"
             placeholder="Scope 1"
-            value="<%=buildingData? buildingData.lpg:"" %>"
+            
             required
           /><br /><br />
         </div>
@@ -93,7 +93,7 @@
             id="propane"
             name="propane"
             placeholder="Scope 3"
-            value="<%=buildingData? buildingData.propane:"" %>"
+           
             required
           /><br /><br />
         </div>
@@ -106,13 +106,13 @@
             id="diesel"
             name="diesel"
             placeholder="Scope 1"
-            value="<%=buildingData? buildingData.diesel:"" %>"
+           
             required
           /><br /><br />
         </div>
         <div class="aks-input-row">
           <label class="aks-input-label" for="refrigerant">Refrigerant:</label>
-          <select value="<%=buildingData? buildingData.refrigerant:"" %>" class="aks-input" id="refrigerant" name="refrigerant">
+          <select  %>" class="aks-input" id="refrigerant" name="refrigerant">
             <option value="CFC">Chlorofluorocarbon</option>
             <option value="HFC">Hydroflourocarbons</option>
             <option value="DFM">Difluoromethane</option>
@@ -132,7 +132,6 @@
             id="refrigerantAmount"
             placeholder="Scope 1"
             name="refrigerantAmount"
-            value="<%=buildingData? buildingData.refrigerantAmount:"" %>"
             required
           />
         </div>
